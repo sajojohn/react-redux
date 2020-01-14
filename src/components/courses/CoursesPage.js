@@ -4,37 +4,20 @@ import * as courseActions from "../../redux/actions/courseActions";
 
 import PropTypes from "prop-types";
 import { bindActionCreators } from "redux";
-
+import CourseList from "./CourseList";
 class CoursesPage extends React.Component {
-  state = {
-    course: {
-      title: "",
-    },
-  };
-  // this.handleChange = this.handleChange.bind(this);
-
-  handleChange = (event) => {
-    const course = { ...this.state.course, title: event.target.value };
-    this.setState({ course });
-  };
-  handleSubmit = () => {
-    event.preventDefault();
-    //since we are not adding mapDispacthToProps explicitily, connect funcion automatically adds dispact as a prop to the component
-    //this.props.dispatch(courseActions.createCourse(this.state.course));
-    this.props.actions.createCourse(this.state.course);
-  };
+  componentDidMount() {
+    this.props.actions.loadCourses().catch((err) => {
+      alert("loading courses failed " + err);
+    });
+  }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <>
         <h2>Courses</h2>
-        <h3>Add Course</h3>
-        <input type='text' onChange={this.handleChange} value={this.state.course.title} />
-        <input type='submit' value='Save' />
-        {this.props.courses.map((course) => (
-          <div key={course.title}>{course.title}</div>
-        ))}
-      </form>
+        <CourseList courses={this.props.courses} />
+      </>
     );
   }
 }
